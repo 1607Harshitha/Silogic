@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Silogic — Think in logic. Design in silicon.</title>
+<style>
+:root{--bg:#f5f8f7;--cd:#fff;--tx:#10201b;--mu:#5b6b66;--ac:#0a8f63;--ac2:#0c6fb3;--bd:#d6e0dc;--bad:#c93a3a;--cb:#eaf1ee;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#080d0b;--cd:#101916;--tx:#e6f2ed;--mu:#8da39b;--ac:#2fe0a0;--ac2:#4db3ff;--bd:#1f2f29;--bad:#ff6b6b;--cb:#0b1210}}
+:root[data-theme="dark"]{--bg:#080d0b;--cd:#101916;--tx:#e6f2ed;--mu:#8da39b;--ac:#2fe0a0;--ac2:#4db3ff;--bd:#1f2f29;--bad:#ff6b6b;--cb:#0b1210}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;line-height:1.55}
+.m{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;padding:10px 18px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:22px;letter-spacing:-.5px;cursor:pointer}.logo b{color:var(--ac)}
+nav{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--cd);color:var(--tx);border-radius:8px;padding:8px 14px}
+button:hover{border-color:var(--ac)}button.p{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+@media (prefers-color-scheme:dark){button.p{color:#04140d}}
+main{max-width:980px;margin:0 auto;padding:22px 18px 40px}
+.hero{padding:36px 0 22px}.hero h1{font-size:clamp(38px,8vw,64px);margin:0;letter-spacing:-2px}.hero h1 b{color:var(--ac)}
+.hero p{color:var(--mu);font-size:18px;max-width:600px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0}
+.card{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:16px}
+.card.k{cursor:pointer}.card.k:hover{border-color:var(--ac)}.card h3{margin:4px 0}.card p{margin:0;color:var(--mu);font-size:14px}
+.tag{font-size:12px;color:var(--ac);font-weight:700}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.stat{flex:1;min-width:90px;text-align:center}.stat b{font-size:22px;display:block;color:var(--ac)}
+.stat span{font-size:12px;color:var(--mu)}
+.bar{height:8px;background:var(--cb);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac);width:0}
+pre{background:var(--cb);border:1px solid var(--bd);border-radius:8px;padding:12px;overflow-x:auto;margin:10px 0;font-size:14px}
+.opt{display:block;width:100%;text-align:left;margin:7px 0}.opt.ok{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 18%,var(--cd))}.opt.no{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 15%,var(--cd))}
+.exp{border-left:3px solid var(--ac);padding:8px 12px;margin:10px 0;background:var(--cb);border-radius:0 8px 8px 0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+input{font:inherit;padding:10px;border-radius:8px;border:1px solid var(--bd);background:var(--cd);color:var(--tx);width:100%}
+.big{font-size:34px;text-align:center;margin:10px 0}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}
+.ln{display:block;width:100%;text-align:left;border:0;border-radius:4px;padding:3px 8px;background:none}.ln:hover{background:var(--cb)}
+.ln.ok{background:color-mix(in srgb,var(--ac) 25%,transparent)}.ln.no{background:color-mix(in srgb,var(--bad) 25%,transparent)}
+footer{border-top:1px solid var(--bd);text-align:center;padding:20px;color:var(--mu);font-weight:600;letter-spacing:.5px}
+.hide{display:none!important}
+label{font-size:13px;color:var(--mu);display:block;margin:8px 0 3px}
+#lg{position:fixed;inset:0;z-index:20;background:radial-gradient(circle at 50% 25%,color-mix(in srgb,var(--ac) 16%,var(--bg)),var(--bg) 70%);display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
+.lb{position:relative;width:100%;max-width:420px;text-align:center;margin:auto}
+.chip{width:210px;height:210px}
+.tr{stroke:var(--ac);stroke-width:2;fill:none;stroke-dasharray:6 10;animation:fl 1.4s linear infinite}
+@keyframes fl{to{stroke-dashoffset:-64}}
+.core{animation:pl 2.4s ease-in-out infinite}@keyframes pl{50%{opacity:.5}}
+.rise{animation:ri .8s ease both}@keyframes ri{from{opacity:0;transform:translateY(16px)}}
+.bits{position:absolute;inset:0;overflow:hidden;pointer-events:none}.bit{position:absolute;top:-30px;color:var(--ac);opacity:.18;animation:fall linear infinite}@keyframes fall{to{transform:translateY(115vh)}}
+.toast{margin:12px 0;padding:10px;border:1px solid var(--ac);border-radius:8px;background:var(--cd);font-size:13px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<header><div class="logo" onclick="show('home')">Si<b>logic</b></div>
+<nav><button onclick="show('home')">Home</button><button onclick="openPractice('verilog')">Practice</button><button onclick="show('games')">Games</button><button onclick="startIV()">Interview</button><span id="hi" class="m" style="color:var(--ac);align-self:center"></span><button id="lo">Logout</button><button id="th" aria-label="Toggle theme">◐</button></nav></header>
+<div id="lg"><div class="bits" id="bits"></div><div class="lb">
+<svg class="chip" viewBox="0 0 200 200"><g class="tr"><path d="M60 80H20V30"/><path d="M60 100H30V170"/><path d="M60 120H10"/><path d="M140 80H180V30"/><path d="M140 100H170V170"/><path d="M140 120H190"/><path d="M80 60V15"/><path d="M120 60V20"/><path d="M80 140V185"/><path d="M120 140V180"/></g><rect class="core" x="60" y="60" width="80" height="80" rx="9" fill="var(--cd)" stroke="var(--ac)" stroke-width="3"/><text x="100" y="108" text-anchor="middle" font-size="28" font-weight="800" fill="var(--ac)" font-family="monospace">Si</text></svg>
+<h1 class="rise" style="margin:0;font-size:40px;letter-spacing:-1px">Si<span style="color:var(--ac)">logic</span></h1>
+<p class="m rise" style="color:var(--ac);margin:4px 0 14px">Think in logic. Design in silicon.</p>
+<div class="card rise" style="text-align:left">
+<div id="s1"><div class="tabs" style="margin:0 0 6px"><button id="m1" class="on" type="button">Create account</button><button id="m2" type="button">Log in</button></div>
+<div class="su"><label for="ln">Full name</label><input id="ln" autocomplete="name" placeholder="Your name"></div>
+<label for="lu">Username</label><input id="lu" autocomplete="username" placeholder="e.g. hima_vlsi">
+<div class="su"><label for="le">Email</label><input id="le" type="email" autocomplete="email" placeholder="you@example.com"></div>
+<label for="lp">Password</label><input id="lp" type="password" autocomplete="new-password" placeholder="Choose any password"><label style="display:flex;gap:6px;align-items:center;margin-top:8px"><input type="checkbox" id="sp" style="width:auto">Show password</label>
+<button class="p opt" id="sb" style="text-align:center;margin-top:14px">Create account</button><div style="text-align:center;margin:10px 0 2px;color:var(--mu);font-size:13px">or</div><button class="opt" id="gb" style="text-align:center">Continue with Google</button><div id="gbtn" style="display:flex;justify-content:center"></div></div>
+<p id="lm" style="color:var(--bad);margin:8px 0 0;font-size:14px"></p></div>
+<p class="m" style="font-size:12px;color:var(--mu)">Verilog · SystemVerilog · VHDL · UVM · SVA · TCL · Python · Perl · Linux · Windows</p><p class="m" style="color:var(--ac);font-weight:600">Warm regards, HIMA KANAKAM</p></div></div>
+<main>
+<section id="home">
+<div class="hero"><h1>Si<b>logic</b></h1><p class="m" style="color:var(--ac);font-size:20px">Think in logic. Design in silicon.</p>
+<p>Built for ECE students and VLSI job aspirants: Verilog, SystemVerilog, VHDL, RTL, UVM, SVA, STA, CDC, DFT, low power, digital and analog electronics, embedded C, communications, scripting, Linux and Windows. Practice endless questions, play coding games and rehearse interview answers.</p>
+<button class="p" onclick="openPractice('verilog')">Start practicing</button> <button onclick="show('games')">Play games</button></div>
+<div class="card"><div class="stats" id="st"></div><div class="bar"><i id="xb"></i></div></div>
+<h2>Choose a track</h2><div class="grid" id="tracks"></div>
+</section>
+
+<section id="practice" class="hide">
+<div class="tabs" id="tabs"></div>
+<div class="card" id="qc"></div>
+</section>
+
+<section id="games" class="hide">
+<h2>Hardware games</h2>
+<div class="tabs"><button onclick="game('bit')">⚡ Bit Blaster</button><button onclick="game('gate')">🔌 Gate Guesser</button><button onclick="game('bug')">🐞 Bug Hunt</button><button onclick="game('race')">🏎 Code Racer</button><button onclick="game('type')">⌨ Code Typer</button><button onclick="game('pair')">🧩 Pair Match</button><button onclick="game('slack')">⏱ Slack Sprint</button></div>
+<div class="card" id="gc"><p>Pick a game. Every win earns XP that counts toward your level.</p></div>
+</section>
+<section id="iv" class="hide"><h2>Interview practice</h2><div class="card" id="ic"></div></section>
+</main>
+<footer>Warm regards,<br>HIMA KANAKAM</footer>
+
+<script>
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[rnd(0,a.length-1)];
+const sh=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const h=(v,w=2)=>v.toString(16).toUpperCase().padStart(w,"0"),b=(v,w=8)=>v.toString(2).padStart(w,"0");
+function mk(q,ans,wr,exp,code){ans=String(ans);let o=[...new Set(wr.map(String))].filter(x=>x!==ans);
+ for(const f of ["Compile error","Undefined (X)","None of these"])if(o.length<3&&!o.includes(f))o.push(f);
+ o=sh([ans,...o.slice(0,3)]);return{q,code,o,a:o.indexOf(ans),exp}}
+const pool=a=>({n:a.length,f:()=>{const[q,an,w,e,c]=pick(a);return mk(q,an,w,e,c)}});
+function cmdGen(label,tasks,files){return{n:tasks.length*files.length,f:()=>{const t=pick(tasks),f=pick(files),o=tasks.filter(x=>x!==t).map(x=>x[1](f));
+ return mk(`${label}: which command will do this? “${t[0]} ${f}”`,t[1](f),sh(o).slice(0,3),`Correct command: ${t[1](f)}`)}}}
+const F=["notes.txt","log.txt","data.csv","run.sh","report.md","top.v","tb.sv","build.log","config.ini","out.txt","a.out","readme.txt"];
+const G={
+verilog:[
+{n:400,f:()=>{const H=rnd(3,31),L=rnd(0,3),w=H-L+1;return mk("How many bits wide is this declaration?",w+" bits",[w-1,w+1,H].map(x=>x+" bits"),`Width = MSB − LSB + 1 = ${H} − ${L} + 1 = ${w}.`,`reg [${H}:${L}] data;`)}},
+{n:2400,f:()=>{const W=rnd(2,6),N=rnd(20,500),r=N%(1<<W);return mk(`A ${W}-bit counter starts at 0 and increments on each posedge. What is its value after ${N} clocks?`,r,[(r+1)%(1<<W),(1<<W)-1,N],`The counter wraps modulo 2^${W} = ${1<<W}. ${N} mod ${1<<W} = ${r}.`,`reg [${W-1}:0] c = 0;\nalways @(posedge clk) c <= c + 1;`)}},
+{n:196608,f:()=>{const A=rnd(0,255),B=rnd(0,255),o=pick(["&","|","^"]),r=o=="&"?A&B:o=="|"?A|B:A^B,all=[A&B,A|B,A^B,(A+B)&255].filter(x=>x!==r);return mk("What is the value of y?",`8'h${h(r)}`,all.map(x=>`8'h${h(x)}`),`${b(A)} ${o} ${b(B)} = ${b(r)} = 8'h${h(r)}.`,`wire [7:0] y = 8'h${h(A)} ${o} 8'h${h(B)};`)}},
+{n:768,f:()=>{const v=rnd(0,255),o=pick(["&","|","^"]),r=o=="&"?(v==255?1:0):o=="|"?(v?1:0):b(v).split("1").length-1&1;return mk("What does this reduction expression evaluate to?",`1'b${r}`,[`1'b${1-r}`],`Reduction ${o} combines all bits of ${b(v)} into one bit: ${r}.`,`wire y = ${o}8'b${b(v)};`)}},
+{n:256,f:()=>{const A=h(rnd(0,15),1),B=h(rnd(0,15),1);return mk("What is y?",`8'h${A}${B}`,[`8'h${B}${A}`,`8'h${A}${A}`,`8'h${B}${B}`],"Concatenation places the first operand in the most significant bits.",`wire [7:0] y = {4'h${A}, 4'h${B}};`)}},
+pool([["Which assignment should be used inside always @(posedge clk) for registers?","<= (non-blocking)",["= (blocking)","== (equality)","=== (case equality)"],"Non-blocking assignments avoid race conditions between flip-flops."],["Which construct models combinational logic and must assign in every branch to avoid latches?","always @(*) with full if/else",["always @(posedge clk)","initial","always @(negedge rst)"],"An incomplete if in a combinational block infers a latch."],["What is the default value of an uninitialised reg in simulation?","X",["0","1","Z"],"Four-state regs start as unknown (X)."],["Which keyword declares a net driven by continuous assignment?","wire",["reg","integer","real"],"Nets such as wire are driven by assign or module outputs."],["What does 4'b10Z1 contain?","A high-impedance bit",["A don’t-care X","A syntax error","A signed value"],"Z is high impedance."]])],
+systemverilog:[
+{n:1792,f:()=>{const v=rnd(0,255),k=rnd(1,7),l=pick([true,false]),r=l?(v<<k)&255:v>>k;return mk("What is the 8-bit result?",`8'h${h(r)}`,[l?v>>k:(v<<k)&255,v,((v<<k)|(v>>(8-k)))&255].map(x=>`8'h${h(x)}`),`${b(v)} ${l?"<<":">>"} ${k} = ${b(r)} (zeros shifted in).`,`logic [7:0] y = 8'h${h(v)} ${l?"<<":">>"} ${k};`)}},
+{n:1000,f:()=>{const N=rnd(2,1024),r=Math.ceil(Math.log2(N));return mk(`What does $clog2(${N}) return?`,r,[r+1,r-1,Math.floor(Math.log2(N))+2],`$clog2 is the ceiling of log2: the bits needed to index ${N} entries.`)}},
+{n:127,f:()=>{const V=rnd(1,127);return mk("What is the hex value of x (two’s complement)?",`8'h${h(256-V)}`,[`8'h${h(V)}`,`8'h${h(255-V)}`,`8'h${h(V|128)}`],`-${V} = 256 − ${V} = ${256-V} = 8'h${h(256-V)}.`,`logic signed [7:0] x = -8'd${V};`)}},
+{n:15,f:()=>{const N=rnd(2,6),s=b(rnd(0,3),2),r=s.repeat(N);return mk("What is y?",r,[s.repeat(N+1),s.repeat(N-1),s.split("").reverse().join("").repeat(N)],`Replication repeats ${s} ${N} times giving ${2*N} bits.`,`logic [${2*N-1}:0] y = {${N}{2'b${s}}};`)}},
+pool([["Which block must be used for sequential logic in modern SystemVerilog?","always_ff",["always_comb","always_latch","initial"],"always_ff documents and checks flip-flop intent."],["Which type replaces both reg and wire in most RTL?","logic",["bit","byte","var net"],"logic is a 4-state variable usable in procedural and continuous contexts."],["Which construct bundles related signals and modports?","interface",["package","class","program"],"Interfaces reduce port-list clutter."],["Which keyword defines named states for an FSM?","enum",["struct","union","typedef int"],"typedef enum logic [1:0] { IDLE, RUN } state_t;"],["What does always_comb add over always @(*)?","Automatic sensitivity and latch checks",["Clocked behaviour","Blocking-only assignments","Nothing"],"Tools warn if it infers a latch."]])],
+rtl:[
+{n:64,f:()=>{const d=b(rnd(0,15),4),s=rnd(0,3),r=d[3-s];return mk("What is the mux output y?",r,[1-r,"X","Z"],`Select ${s} picks bit d[${s}] = ${r}.`,`// 4:1 mux  y = d[sel]\nd = 4'b${d}, sel = 2'd${s}`)}},
+{n:128,f:()=>{const t=b(rnd(0,63),6),r=t.split("1").length-1&1;return mk(`A T flip-flop starts at Q=0. T inputs over 6 clocks: ${t}. Final Q?`,`Q = ${r}`,[`Q = ${1-r}`],`Q toggles on every T=1. There are ${t.split("1").length-1} ones, so Q = ${r}.`)}},
+{n:256,f:()=>{const x=rnd(0,15),y=rnd(0,15),s=x+y;return mk(`A 4-bit adder has a=${x}, b=${y}. What is {cout, sum} in binary?`,b(s,5),[b(s&15,5),b(x^y,5),b(x|y,5)],`${x} + ${y} = ${s} = ${b(s,5)}; the MSB is the carry out.`)}},
+{n:4000,f:()=>{const N=rnd(3,4096),r=Math.ceil(Math.log2(N));return mk(`Minimum flip-flops for a mod-${N} counter?`,r,[r+1,r-1,N],`Need ceil(log2(${N})) = ${r} bits of state.`)}},
+{n:255,f:()=>{const v=rnd(1,255),g=v^(v>>1);return mk(`Gray code of binary ${b(v)}?`,b(g),[b(v),b(g^1),b(v>>1)],"gray = bin ^ (bin >> 1).")}},
+{n:1152,f:()=>{const T=rnd(5,20),q=rnd(1,3),c=rnd(1,12),su=rnd(1,2),s=T-q-c-su;return mk(`Setup slack: clock period ${T} ns, clk→Q ${q} ns, logic ${c} ns, setup ${su} ns. Slack?`,`${s} ns`,[s+1,s-1,T-c].map(x=>x+" ns"),`Slack = T − (tcq + tlogic + tsu) = ${T} − ${q+c+su} = ${s} ns. ${s<0?"Violated.":"Met."}`)}}],
+linux:[
+{n:512,f:()=>{const d=[rnd(0,7),rnd(0,7),rnd(0,7)],p=x=>(x&4?"r":"-")+(x&2?"w":"-")+(x&1?"x":"-"),r=d.map(p).join("");return mk(`What permissions does chmod ${d.join("")} file give?`,r,[0,1,2].map(i=>{const e=[...d];e[i]=(e[i]+1)%8;return e.map(p).join("")}),`4=r, 2=w, 1=x per digit: ${d.join(" ")} → ${r}.`)}},
+{n:30,f:()=>{const n=rnd(1,30),w=Array.from({length:n},(_,i)=>"w"+i).join(" ");return mk("What does this print?",n,[n+1,n-1,w.length],"wc -w counts whitespace-separated words.",`echo "${w}" | wc -w`)}},
+cmdGen("Linux",[["Display the contents of",f=>`cat ${f}`],["Count the lines in",f=>`wc -l ${f}`],["Show the last 10 lines of",f=>`tail -n 10 ${f}`],["Make owner-executable:",f=>`chmod u+x ${f}`],["Delete",f=>`rm ${f}`],["Search for “error” in",f=>`grep error ${f}`],["Show permissions and size of",f=>`ls -l ${f}`],["Rename to old.txt:",f=>`mv ${f} old.txt`]],F),
+pool([["Which command prints the current directory?","pwd",["ls","cd","whoami"],"pwd = print working directory."],["Which command shows disk space in human-readable form?","df -h",["du -s","free -m","top"],"df reports filesystem usage."],["Which command lists running processes in detail?","ps aux",["ls -a","jobs","kill -l"],"ps aux shows all processes."],["Which command finds files named *.v under the current directory?","find . -name \"*.v\"",["ls *.v -r","grep *.v","locate -d"],"find walks the directory tree."],["Which command shows the Verilog simulator’s path?","which iverilog",["where -f iverilog","cat iverilog","ls iverilog"],"which prints the resolved executable path."]])],
+windows:[
+cmdGen("CMD",[["Display the contents of",f=>`type ${f}`],["Delete",f=>`del ${f}`],["Copy to D:\\backup:",f=>`copy ${f} D:\\backup`],["Rename to old.txt:",f=>`ren ${f} old.txt`],["Search for “error” in",f=>`findstr error ${f}`],["Show attributes of",f=>`attrib ${f}`]],F),
+cmdGen("PowerShell",[["Display the contents of",f=>`Get-Content ${f}`],["Delete",f=>`Remove-Item ${f}`],["Copy to D:\\backup:",f=>`Copy-Item ${f} D:\\backup`],["Search for “error” in",f=>`Select-String error ${f}`],["Rename to old.txt:",f=>`Rename-Item ${f} old.txt`]],F),
+pool([["Which command shows IP configuration?","ipconfig",["ifconfig","netstat -r","ping"],"ipconfig is the Windows tool."],["Which command lists running processes in CMD?","tasklist",["ps","jobs","top"],"tasklist lists processes."],["Which command ends a process by PID?","taskkill /PID 1234",["kill 1234","stop 1234","end /PID 1234"],"taskkill terminates processes."],["Which command clears the CMD screen?","cls",["clear","clr","reset"],"cls on Windows, clear on Linux."]])]};
+const T=[["verilog","Verilog","Gates, widths, operators, blocking vs non-blocking."],["systemverilog","SystemVerilog","logic, always_ff, shifts, signed math, $clog2."],["rtl","RTL Design","Muxes, adders, counters, Gray code, timing slack."],["linux","Linux","Commands, permissions, pipelines for EDA flows."],["windows","Windows","CMD and PowerShell essentials."]];
+const esc=s=>s.replace(/</g,"&lt;");
+G.vhdl=[{n:400,f:()=>{const H=rnd(3,31),L=rnd(0,3),w=H-L+1;return mk("How many bits wide is this VHDL signal?",w+" bits",[w-1,w+1,H].map(x=>x+" bits"),`${H} downto ${L} gives ${w} bits.`,`signal d : std_logic_vector(${H} downto ${L});`)}},
+pool([["Which function detects a clock rising edge in VHDL?","rising_edge(clk)",["posedge clk","clk = 'rise'","wait until clk = 0"],"rising_edge(clk) is the standard idiom."],["Which operator assigns a signal?","<=",[":=","=>","=="],"Signals use <=, variables use :=."],["What does an entity declare?","The ports (interface)",["The behaviour","The testbench","The clock tree"],"The architecture holds the behaviour."],["Which library provides std_logic?","ieee.std_logic_1164",["ieee.numeric_bit","std.textio","work.all"],"use ieee.std_logic_1164.all;"],["Which statement is concurrent?","y <= a when sel = '1' else b;",["variable v := 1;","wait for 10 ns inside a function","if inside a package"],"when/else is a concurrent assignment."]])];
+G.verification=[{n:8,f:()=>{const P=pick([2,4,5,8,10,20,25,40]),f=1000/P;return mk(`With timescale 1ns/1ps, a testbench runs forever #${P/2} clk = ~clk;. Clock frequency?`,f+" MHz",[f*2,f/2,P].map(x=>x+" MHz"),`Period = 2 × ${P/2} = ${P} ns, so f = 1000/${P} = ${f} MHz.`)}},
+{n:5000,f:()=>{const T=rnd(10,100),Hh=rnd(1,T),p=(100*Hh/T).toFixed(1);return mk(`Functional coverage: ${Hh} of ${T} bins are hit. Coverage?`,p+"%",[(100*(T-Hh)/T).toFixed(1),(100*Hh/(T+1)).toFixed(1),(100*(Hh+1)/T).toFixed(1)].map(x=>x+"%"),`${Hh}/${T} × 100 = ${p}%.`)}},
+pool([["Which UVM phase builds child components?","build_phase",["run_phase","connect_phase","report_phase"],"build_phase creates components top-down."],["Which UVM component drives pin-level signals?","uvm_driver",["uvm_monitor","uvm_scoreboard","uvm_test"],"The driver converts transactions to signal activity."],["What does a |-> ##2 b mean in SVA?","If a holds, b must hold 2 cycles later",["b holds 2 cycles before a","a and b hold together","b holds 2 ns later"],"|-> is overlapping implication; ##2 is a 2-cycle delay."],["Which SVA operator is non-overlapping implication?","|=>",["|->","##1","&&"],"|=> checks the consequent on the next cycle."],["What is a scoreboard for?","Comparing DUT output with expected results",["Driving stimulus","Generating clocks","Synthesising RTL"],"It checks correctness."],["Which construct waits for all parallel threads to finish?","fork ... join",["fork ... join_none","begin ... end","disable fork"],"join blocks until every child finishes."]])];
+G.scripting=[{n:8000,f:()=>{const A=rnd(1,20),B=rnd(1,20),C=rnd(1,20),r=A*B+C;return mk("TCL: what does this print?",r,[A+B*C,(A+B)*C,r+1],`Precedence: ${A}*${B}+${C} = ${r}.`,`puts [expr {${A} * ${B} + ${C}}]`)}},
+{n:255,f:()=>{const v=rnd(1,255);return mk("Python: what does this print?","0x"+v.toString(16),["0b"+v.toString(2),"0x"+v.toString(16).toUpperCase(),String(v)],"hex() returns lowercase with a 0x prefix.",`print(hex(${v}))`)}},
+pool([["Which TCL command assigns a variable?","set x 5",["x = 5","let x=5","var x 5"],"TCL uses set."],["Which Perl operator matches a regex?","=~",["==","~=","eq"],"$str =~ /pattern/"],["In a Makefile, what is $@?","The target name",["The first prerequisite","All prerequisites","The directory"],"$< is the first prerequisite."],["Bash: which variable holds the last exit status?","$?",["$!","$#","$0"],"0 means success."],["Which Python module runs shell commands?","subprocess",["argparse","re","sys.path"],"subprocess.run([...]) launches tools."],["What are EDA tools commonly scripted with?","TCL",["COBOL","Swift","Rust only"],"Synopsys and Cadence tools expose TCL shells; SDC is TCL-based."]])];
+G.coding=[pool([["Complete the 2:1 mux.","sel ? a : b",["sel & a | b","a ? sel : b","sel == a"],"The ternary picks a when sel is 1.","assign y = ___;"],["Complete the clock generator.","clk = ~clk",["clk <= clk","clk = 1","~clk"],"Toggle every half period.","initial clk = 0;\nalways #5 ___;"],["Complete the flip-flop.","q <= d;",["d <= q;","q == d;","assign q = d;"],"Non-blocking assignment in clocked logic.","always @(posedge clk)\n  if (rst) q <= 0;\n  else ___"],["Complete the rising-edge detector.","d & ~d_q",["d | ~d_q","d & d_q","d ^ d_q ^ d"],"Now high and previously low.","assign rise = ___;"],["Complete the 8-bit shift register.","{sr[6:0], din}",["{din, sr[6:0]}","{sr[7:1], din}","sr << din"],"Shift left and insert din at the LSB.","always @(posedge clk)\n  sr <= ___;"],["Complete the SVA assertion.","##[1:3] ack",["ack ##3","1:3 ack","|-> ack ##"],"ack must arrive 1 to 3 cycles after req.","assert property (@(posedge clk)\n  req |-> ___);"],["Complete the TCL loop.","$i",["i","{i}","%i"],"TCL dereferences variables with $.","foreach i {1 2 3} { puts ___ }"],["Complete the Python.","2",["10","8","16"],"The base argument is 2 for binary strings.","print(int(\"1010\", ___))  # 10"]])];
+T.push(["vhdl","VHDL","Entities, signals, processes, concurrent statements."],["verification","Verification","UVM, testbenches, SVA assertions, coverage."],["scripting","Scripting","TCL, Python, Perl, Makefile, Bash for EDA flows."],["coding","Code Writing","Fill in the missing RTL, SVA and script lines."]);
+const TL=["assign y = a & b;","always @(posedge clk) q <= d;","logic [7:0] data;","if (!rst_n) count <= 0;","wire [3:0] sum = a + b;","always_comb y = sel ? a : b;","assign carry = a & b;","set_clock_uncertainty 0.1 [get_clocks clk]","chmod +x run.sh"];
+const fx=x=>String(+x.toFixed(2));
+G.sta=[{n:2000,f:()=>{const q=rnd(1,3),m=rnd(0,10),th=rnd(1,4),r=q+m-th;return mk(`Hold check: clk→Q ${q} ns, minimum logic delay ${m} ns, hold time ${th} ns, no skew. Hold slack?`,r+" ns",[r+1,r-1,q-th].map(x=>x+" ns"),`Hold slack = tcq + tmin − thold = ${q}+${m}−${th} = ${r} ns.`)}},
+{n:6,f:()=>{const T=pick([4,5,8,10,20,25]),f=1000/T;return mk(`tcq = 1 ns, tsu = 1 ns, logic delay = ${T-2} ns. Maximum clock frequency?`,f+" MHz",[f*2,f/2,1000/(T-2)].map(x=>fx(x)+" MHz"),`Tmin = 1 + ${T-2} + 1 = ${T} ns, so fmax = 1000/${T} = ${f} MHz.`)}},
+pool([["How do you fix a setup violation?","Reduce logic delay or add pipeline stages",["Add delay buffers on the data path","Increase hold time","Gate the clock"],"Setup depends on the clock period, so shorten the path."],["How do you fix a hold violation?","Insert delay buffers on the data path",["Increase clock frequency","Remove flip-flops","Reduce the clock period"],"Hold does not depend on the clock period."],["A false path is…","A path that can never be functionally exercised",["A path with negative slack","A clock path","A scan path only"],"Excluded with set_false_path."],["Which SDC command defines a clock?","create_clock",["set_clock","define_clk","make_clock"],"create_clock -period 10 [get_ports clk]"]])];
+G.cdc=[{n:9,f:()=>{const k=rnd(2,10);return mk(`An async FIFO has depth ${2**k}. How wide are its read and write pointers?`,k+1+" bits",[k,k+2,2**k].map(x=>x+" bits"),`log2(${2**k}) = ${k} address bits plus 1 extra bit to tell full from empty.`)}},
+pool([["How many flip-flops does the basic synchronizer use?","Two",["One","Zero","Four only"],"The second flop gives the first time to settle."],["Why use Gray code for async FIFO pointers?","Only one bit changes per count",["It adds faster","It needs fewer bits","It removes clocks"],"A single-bit change cannot be sampled as a wrong value."],["How do you pass a multi-bit bus across clock domains?","A handshake or async FIFO",["Two flops on each bit separately","A faster clock","A latch"],"Bits could arrive in different cycles."],["Metastability is…","An undefined output after a setup or hold violation",["A short circuit","A reset glitch","A power state"],"Its resolution time is random."]])];
+G.dft=[{n:5000,f:()=>{const N=rnd(10,5000);return mk(`A design has ${N} nets. How many single stuck-at faults are there?`,2*N,[N,2*N-1,N*N],"Each net can be stuck-at-0 or stuck-at-1, so 2 × nets.")}},
+{n:17100,f:()=>{const P=rnd(10,100),L=rnd(10,200);return mk(`A scan chain has ${L} flops and ${P} patterns. Approx shift cycles (ignore capture)?`,P*L,[P+L,P*L+L,(P-1)*L],`Each pattern needs ${L} shift clocks: ${P} × ${L}.`)}},
+pool([["What does a scan flip-flop add to a normal flop?","A mux selecting functional or scan data",["A second clock","A reset pin","A latch only"],"Scan enable picks the path."],["Stuck-at-0 means…","A net is permanently at logic 0",["The delay is too high","The clock stops","The output toggles"],"It is the classic fault model."],["JTAG is which standard?","IEEE 1149.1",["IEEE 802.3","IEEE 1800","IEEE 754"],"Boundary scan standard."],["BIST stands for…","Built-In Self-Test",["Boundary Input Scan Test","Basic IC Stress Test","Binary Scan Tool"],"The chip tests itself."]])];
+G.lowpower=[{n:3000,f:()=>{const a=pick([.1,.2,.5,1]),C=rnd(1,20),V=pick([.8,1,1.2]),F=pick([100,200,500,1000]),r=a*C*V*V*F;return mk(`Dynamic power with α=${a}, C=${C} pF, V=${V} V, f=${F} MHz?`,fx(r)+" µW",[r*2,r/2,a*C*V*F].map(x=>fx(x)+" µW"),`P = αCV²f = ${a}×${C}×${V}²×${F} = ${fx(r)} µW (pF × MHz gives µW).`)}},
+{n:5,f:()=>{const k=pick([.5,.6,.7,.8,.9]),r=Math.round(k*k*100);return mk(`Supply voltage is scaled to ${k} of its value. Dynamic power becomes what % of the original?`,r+"%",[k*100,r*2,100-r].map(x=>Math.round(x)+"%"),`Power scales with V², so ${k}² = ${r}%.`)}},
+pool([["Clock gating mainly reduces…","Dynamic power",["Leakage only","Area","Setup time"],"Idle flops stop toggling."],["Power gating mainly reduces…","Leakage power",["Dynamic power only","Clock skew","Wire delay"],"Idle blocks are switched off."],["High-Vt cells are…","Slower but lower leakage",["Faster with higher leakage","Faster with lower leakage","Identical to low-Vt"],"Multi-Vt balances speed and leakage."],["DVFS changes…","Voltage and frequency at runtime",["Only the layout","Only the netlist","Only clock buffers"],"Lower workload, lower V and f."]])];
+G.digital=[{n:100,f:()=>{const v=rnd(0,99);return mk(`BCD code of decimal ${v}?`,b(Math.floor(v/10),4)+" "+b(v%10,4),[b(v,8),b(v%10,4)+" "+b(Math.floor(v/10),4),b(Math.floor(v/10),4)+" "+b(v%10+1,4)],"Each decimal digit is encoded in 4 bits.")}},
+{n:128,f:()=>{const V=rnd(1,128);return mk(`8-bit two’s complement of −${V}?`,b(256-V),[b(V),b(255-V),b((256-V)^128)],`256 − ${V} = ${256-V}, which is ${b(256-V)}.`)}},
+{n:30,f:()=>{const n=rnd(2,16),j=pick([true,false]);return mk(`How many unique states does a ${n}-bit ${j?"Johnson":"ring"} counter have?`,j?2*n:n,[j?n:2*n,2**n,n+1],j?"Johnson (twisted ring) gives 2n states.":"A one-hot ring counter gives n states.")}},
+pool([["Which are universal gates?","NAND and NOR",["AND and OR","XOR and XNOR","NOT and AND"],"Any logic can be built from either."],["Simplify A + A·B","A",["B","A·B","A + B"],"Absorption law."],["Which flip-flop removes the SR invalid state?","JK",["D","T","SR latch"],"JK toggles when J=K=1."],["A glitch from unequal path delays is a…","Hazard",["Race-around","Metastable state","Skew"],"Static or dynamic hazard."]])];
+G.analog=[{n:300,f:()=>{const Vi=pick([5,9,12]),A=rnd(1,10),B=rnd(1,10),r=Vi*B/(A+B);return mk(`Voltage divider: Vin=${Vi} V, R1=${A} kΩ (top), R2=${B} kΩ (bottom). Vout?`,fx(r)+" V",[Vi*A/(A+B),Vi/2,Vi*B/A].map(x=>fx(x)+" V"),`Vout = Vin × R2/(R1+R2) = ${fx(r)} V.`)}},
+{n:10000,f:()=>{const R=rnd(1,100),C=rnd(1,100);return mk(`RC circuit: R=${R} kΩ, C=${C} µF. Time constant τ?`,R*C+" ms",[R*C*10,R*C/10,R+C].map(x=>fx(x)+" ms"),"τ = RC; kΩ × µF = ms.")}},
+{n:16,f:()=>{const Ri=pick([1,2,5,10]),Rf=pick([10,20,50,100]),g=-Rf/Ri;return mk(`Inverting op-amp: Rin=${Ri} kΩ, Rf=${Rf} kΩ. Gain?`,fx(g),[-g,1+Rf/Ri,-Ri/Rf].map(fx),"Gain = −Rf/Rin.")}},
+pool([["Silicon diode forward voltage is about…","0.7 V",["0.2 V","1.5 V","5 V"],"Germanium is about 0.3 V."],["A BJT amplifier works in the…","Active region",["Cutoff","Saturation","Breakdown"],"Cutoff and saturation are the switch states."],["Ideal op-amp input impedance is…","Infinite",["Zero","1 kΩ","Equal to Rf"],"No current enters the inputs."],["Negative feedback…","Stabilises gain and reduces distortion",["Increases distortion","Doubles open-loop gain","Removes biasing"],"Trading gain for stability."]])];
+G.embedded=[{n:6144,f:()=>{const v=rnd(0,255),k=rnd(0,7),o=pick(["|=","&=~","^="]),m=1<<k,r=o=="|="?v|m:o=="&=~"?v&~m&255:v^m;return mk("Embedded C: final value of r?","0x"+h(r),[v|m,v&~m&255,v^m,v].filter(x=>x!==r).map(x=>"0x"+h(x)),`Mask for bit ${k} is 0x${h(m)}; |= sets, &=~ clears, ^= toggles.`,`uint8_t r = 0x${h(v)};\nr ${o}(1<<${k});`)}},
+{n:15,f:()=>{const F=pick([1,8,16]),Pr=pick([1,8,64,256,1024]),t=256*Pr/F;return mk(`8-bit timer, ${F} MHz clock, prescaler ${Pr}. Overflow time?`,fx(t)+" µs",[t*2,t/2,255*Pr/F].map(x=>fx(x)+" µs"),`256 × ${Pr} / ${F} MHz = ${fx(t)} µs.`)}},
+pool([["What does volatile tell the compiler?","The value may change outside normal program flow",["Store it in flash","It is constant","Inline the function"],"Use it for registers and ISR-shared variables."],["Which bus uses SDA and SCL?","I2C",["SPI","UART","CAN"],"Two wires, addressed devices."],["An ISR should be…","Short and fast",["Long with printf","Blocking with delays","Recursive"],"Defer heavy work to the main loop."],["Full-duplex UART needs…","TX, RX and ground",["One wire only","MOSI, MISO, SCK, CS","Three clocks"],"Cross TX and RX between devices."]])];
+G.comms=[{n:50,f:()=>{const f=rnd(1,50);return mk(`A signal has a maximum frequency of ${f} kHz. Minimum Nyquist sampling rate?`,2*f+" kHz",[f,4*f,f/2].map(x=>x+" kHz"),"fs ≥ 2·fmax.")}},
+{n:160,f:()=>{const B=rnd(1,20),k=rnd(1,8);return mk(`Bandwidth ${B} kHz, SNR = ${2**k-1} (linear). Shannon capacity?`,B*k+" kbps",[B*(2**k-1),B*k*2,B+k].map(x=>x+" kbps"),`C = B·log2(1+SNR) = ${B}×log2(${2**k}) = ${B*k} kbps.`)}},
+{n:12,f:()=>{const bd=pick([1200,2400,9600]),M=pick([2,4,16,64]),r=bd*Math.log2(M);return mk(`${bd} baud with ${M}-level symbols. Bit rate?`,r+" bps",[bd,bd*M,r/2].map(x=>x+" bps"),`bits/symbol = log2(${M}) = ${Math.log2(M)}.`)}},
+pool([["In AM, the carrier amplitude varies with…","The message signal",["Phase","Frequency","Noise"],"Frequency stays constant."],["Which is generally more noise-immune?","FM",["AM","DSB-SC","Baseband only"],"FM rejects amplitude noise."],["Aliasing occurs when…","Sampling is below the Nyquist rate",["Sampling is above Nyquist","Quantisation is fine","Filtering is ideal"],"Use an anti-alias filter."],["Bandwidth of AM with message bandwidth W?","2W",["W","W/2","4W"],"Two sidebands."]])];
+T.push(["sta","STA","Setup, hold, slack, SDC and timing closure."],["cdc","CDC","Synchronizers, metastability, async FIFOs."],["dft","DFT","Scan, ATPG, stuck-at faults, BIST, JTAG."],["lowpower","Low Power","Dynamic power, clock and power gating, DVFS."],["digital","Digital Electronics","BCD, counters, two’s complement, gates."],["analog","Analog Circuits","Dividers, RC, op-amps, diodes, BJTs."],["embedded","Embedded C","Bit tricks, timers, I2C, SPI, UART."],["comms","Signals & Comms","Nyquist, Shannon, modulation, baud."]);
+const total=Object.values(G).flat().reduce((s,g)=>s+g.n,0);
+let S={solved:0,right:0,streak:0,xp:0};try{S=Object.assign(S,JSON.parse(localStorage.getItem("silogic")||"{}"))}catch(e){}
+const save=()=>{try{localStorage.setItem("silogic",JSON.stringify(S))}catch(e){}};
+const $=id=>document.getElementById(id);
+function stats(){const lv=Math.floor(S.xp/100)+1;$("st").innerHTML=[["Level",lv],["XP",S.xp],["Solved",S.solved],["Accuracy",S.solved?Math.round(100*S.right/S.solved)+"%":"–"],["Streak",S.streak],["Question variants",total.toLocaleString("en-IN")+"+"]].map(x=>`<div class="stat"><b>${x[1]}</b><span>${x[0]}</span></div>`).join("");$("xb").style.width=(S.xp%100)+"%"}
+function xp(n){S.xp+=n;save();stats()}
+function show(id){["home","practice","games","iv"].forEach(s=>$(s).classList.toggle("hide",s!=id));stats();scrollTo(0,0)}
+$("tracks").innerHTML=T.map(t=>`<div class="card k" onclick="openPractice('${t[0]}')"><div class="tag">${G[t[0]].reduce((s,g)=>s+g.n,0).toLocaleString("en-IN")}+ variants</div><h3>${t[1]}</h3><p>${t[2]}</p></div>`).join("");
+let cur="verilog";
+function openPractice(c){cur=c;show("practice");$("tabs").innerHTML=T.map(t=>`<button class="${t[0]==c?"on":""}" onclick="openPractice('${t[0]}')">${t[1]}</button>`).join("");nextQ()}
+function nextQ(){const q=pick(G[cur]).f();let done=false;const c=$("qc");
+ c.innerHTML=`<div class="tag">${cur.toUpperCase()} · +10 XP for a correct answer</div><h3>${q.q}</h3>${q.code?`<pre class="m">${q.code.replace(/</g,"&lt;")}</pre>`:""}<div id="os">${q.o.map((o,i)=>`<button class="opt m" data-i="${i}">${String(o).replace(/</g,"&lt;")}</button>`).join("")}</div><div id="ex"></div><div class="row" style="margin-top:10px"><button id="rv">Reveal answer</button><button class="p" id="nx">Next question →</button></div>`;
+ const fin=(i)=>{if(done)return;done=true;const ok=i==q.a;document.querySelectorAll(".opt").forEach((el,k)=>{if(k==q.a)el.classList.add("ok");else if(k==i)el.classList.add("no")});
+  if(i>=0){S.solved++;if(ok){S.right++;S.streak++;S.xp+=10}else S.streak=0;save();stats()}
+  $("ex").innerHTML=`<div class="exp"><b>${i<0?"Answer":ok?"Correct!":"Not quite."}</b> The answer is <span class="m">${String(q.o[q.a]).replace(/</g,"&lt;")}</span>.<br>${q.exp}</div>`};
+ document.querySelectorAll(".opt").forEach(el=>el.onclick=()=>fin(+el.dataset.i));$("rv").onclick=()=>fin(-1);$("nx").onclick=nextQ}
+let tm,gs;
+function game(g){clearInterval(tm);if(g=="race"||g=="type")return game2(g);if(g=="pair"||g=="slack")return game3(g);const c=$("gc");gs={s:0,l:3};
+ if(g=="bit"){gs.t=30;const nq=()=>{const v=rnd(0,255),m=rnd(0,2);gs.v=v;gs.a=m==0?b(v):m==1?String(v):h(v);gs.m=m;
+   $("bq").innerHTML=m==0?`Decimal ${v} → 8-bit binary`:m==1?`Binary ${b(v)} → decimal`:`Decimal ${v} → hex`;$("bi").value="";$("bi").focus()};
+  c.innerHTML=`<h3>⚡ Bit Blaster</h3><p class="m" id="bs">Time 30 · Score 0</p><div class="big m" id="bq"></div><input id="bi" class="m" autocomplete="off" placeholder="Type answer, press Enter"><p id="bf" class="m"></p>`;nq();
+  $("bi").onkeydown=e=>{if(e.key!="Enter")return;const ok=$("bi").value.trim().toUpperCase()==gs.a;$("bf").textContent=ok?"✔ Correct":"✘ Answer was "+gs.a;if(ok){gs.s++;xp(3)}nq()};
+  tm=setInterval(()=>{gs.t--;$("bs").textContent=`Time ${gs.t} · Score ${gs.s}`;if(gs.t<=0){clearInterval(tm);c.innerHTML=`<h3>Time’s up!</h3><p>Score: <b>${gs.s}</b></p><button class="p" onclick="game('bit')">Play again</button>`}},1000)}
+ if(g=="gate"){const gt={AND:(a,c)=>a&c,OR:(a,c)=>a|c,NAND:(a,c)=>1-(a&c),NOR:(a,c)=>1-(a|c),XOR:(a,c)=>a^c,XNOR:(a,c)=>1-(a^c)};
+  const nq=()=>{const n=pick(Object.keys(gt)),a=rnd(0,1),d=rnd(0,1);gs.a=gt[n](a,d);gs.e=`${n}(${a}, ${d}) = ${gs.a}`;$("gq").innerHTML=`${n}<br>A=${a}  B=${d}`};
+  c.innerHTML=`<h3>🔌 Gate Guesser</h3><p id="gl" class="m"></p><div class="big m" id="gq"></div><div class="row"><button class="p" id="g0">Output 0</button><button class="p" id="g1">Output 1</button></div><p id="gf" class="m"></p>`;
+  const upd=()=>$("gl").textContent=`Lives ${"♥".repeat(gs.l)} · Score ${gs.s}`;upd();nq();
+  const ans=v=>{if(v==gs.a){gs.s++;xp(2);$("gf").textContent="✔ "+gs.e}else{gs.l--;$("gf").textContent="✘ "+gs.e}upd();if(gs.l<=0){c.innerHTML=`<h3>Game over</h3><p>Score: <b>${gs.s}</b></p><button class="p" onclick="game('gate')">Play again</button>`;return}nq()};
+  $("g0").onclick=()=>ans(0);$("g1").onclick=()=>ans(1)}
+ if(g=="bug"){const B=[[["module and2(input a, b, output y);","  assign y = a | b;","endmodule"],1,"An AND gate needs &, not |."],[["always @(posedge clk) begin","  if (rst)","    q <= 0;","  else","    q = d;","end"],4,"Use non-blocking <= in clocked logic."],[["always @(*) begin","  if (sel)","    y = a;","end"],1,"No else branch: a latch is inferred."],[["reg [3:0] count;","always @(posedge clk)","  count <= count + 1;","assign done = (count = 4'hF);"],3,"= is assignment; use == for comparison."],[["module dff(input clk, d, output reg q);","  always @(posedge clk) q <= d;","  assign q = d;","endmodule"],2,"A reg cannot be driven by both a procedural block and assign."],[["wire [7:0] a, b;","wire [8:0] sum;","assign sum = a + b;","assign carry = sum[7];"],3,"With a 9-bit sum, carry is sum[8]."]];
+  const nq=()=>{const[l,i,e]=pick(B);c.innerHTML=`<h3>🐞 Bug Hunt</h3><p>Click the buggy line. Score ${gs.s}</p><pre class="m">${l.map((x,k)=>`<button class="ln m" data-k="${k}">${x.replace(/</g,"&lt;")||" "}</button>`).join("")}</pre><div id="bx"></div>`;
+   document.querySelectorAll(".ln").forEach(el=>el.onclick=()=>{const k=+el.dataset.k;document.querySelectorAll(".ln").forEach(x=>x.disabled=true);document.querySelectorAll(".ln")[i].classList.add("ok");if(k==i){gs.s++;xp(8)}else el.classList.add("no");
+    $("bx").innerHTML=`<div class="exp"><b>${k==i?"Found it!":"Not that line."}</b> Bug is on line ${i+1}. ${e}</div><button class="p" id="bn">Next bug →</button>`;$("bn").onclick=nq})};nq()}}
+$("th").onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue("--bg").trim()=="#080d0b";r.setAttribute("data-theme",d?"light":"dark")};
+function game2(g){const c=$("gc");gs={s:0};
+ if(g=="race"){gs.t=45;const nq=()=>{const q=pick(pick(Object.values(G))).f();c.innerHTML=`<h3>🏎 Code Racer</h3><p class="m" id="rt">Time ${gs.t} · Score ${gs.s} · wrong answer = −3s</p><b>${q.q}</b>${q.code?`<pre class="m">${esc(q.code)}</pre>`:""}${q.o.map((o,i)=>`<button class="opt m" data-i="${i}">${esc(String(o))}</button>`).join("")}`;c.querySelectorAll(".opt").forEach(el=>el.onclick=()=>{if(+el.dataset.i==q.a){gs.s++;xp(4)}else gs.t-=3;nq()})};nq();
+  tm=setInterval(()=>{gs.t--;if(gs.t<=0){clearInterval(tm);c.innerHTML=`<h3>Race over!</h3><p>Score: <b>${gs.s}</b></p><button class="p" onclick="game('race')">Race again</button>`}else if($("rt"))$("rt").textContent=`Time ${gs.t} · Score ${gs.s} · wrong answer = −3s`},1000)}
+ else{gs.i=0;gs.t0=Date.now();const L=sh(TL).slice(0,5);const nq=()=>{if(gs.i>=5){c.innerHTML=`<h3>Done!</h3><p>${gs.s}/5 perfect lines in ${((Date.now()-gs.t0)/1000).toFixed(1)}s</p><button class="p" onclick="game('type')">Again</button>`;xp(gs.s*4);return}
+  c.innerHTML=`<h3>⌨ Code Typer</h3><p>Line ${gs.i+1}/5. Type it exactly, then press Enter.</p><pre class="m">${esc(L[gs.i])}</pre><input id="ti" class="m" autocomplete="off" spellcheck="false">`;$("ti").focus();$("ti").onkeydown=e=>{if(e.key!="Enter")return;if($("ti").value.trim()==L[gs.i])gs.s++;gs.i++;nq()}};nq()}}
+for(let i=0;i<26;i++){const s=document.createElement("span");s.className="bit m";s.textContent=Math.random()<.5?"0":"1";s.style.cssText=`left:${rnd(0,98)}%;animation-duration:${rnd(6,14)}s;animation-delay:-${rnd(0,14)}s;font-size:${rnd(12,24)}px`;$("bits").appendChild(s)}
+function enter(n){try{localStorage.setItem("silogic_user",n)}catch(e){}$("lg").classList.add("hide");$("hi").textContent="👋 "+n}
+const AC=[["CDC","Clock Domain Crossing"],["STA","Static Timing Analysis"],["DFT","Design for Test"],["ATPG","Automatic Test Pattern Generation"],["UVM","Universal Verification Methodology"],["SVA","SystemVerilog Assertions"],["RTL","Register Transfer Level"],["FSM","Finite State Machine"],["SDC","Synopsys Design Constraints"],["DVFS","Dynamic Voltage Frequency Scaling"],["PVT","Process Voltage Temperature"],["LFSR","Linear Feedback Shift Register"]];
+function game3(g){const c=$("gc");gs={s:0,l:3};
+ if(g=="pair"){const P=sh(AC).slice(0,6),R=sh(P);let sel=null,dn=0;c.innerHTML=`<h3>🧩 Pair Match</h3><p>Tap an acronym, then its meaning.</p><div class="row"><div id="pa"></div><div id="pb"></div></div><p id="pf" class="m"></p>`;
+  P.forEach((p,i)=>{const a=document.createElement("button");a.className="opt m";a.textContent=p[0];a.onclick=()=>{sel=i;[...$("pa").children].forEach(x=>x.style.borderColor="");a.style.borderColor="var(--ac)"};$("pa").appendChild(a)});
+  R.forEach(r=>{const d=document.createElement("button");d.className="opt";d.textContent=r[1];d.onclick=()=>{if(sel==null)return;const a=$("pa").children[sel];if(P[sel]===r){a.disabled=d.disabled=true;a.classList.add("ok");d.classList.add("ok");xp(3);sel=null;if(++dn==6)$("pf").textContent="🎉 All matched! Great work."}else{d.classList.add("no");setTimeout(()=>d.classList.remove("no"),400)}};$("pb").appendChild(d)})}
+ else{const nq=()=>{const T=rnd(5,20),q=rnd(1,3),cl=rnd(1,14),su=rnd(1,2),r=T-q-cl-su;gs.a=r>=0;gs.e=`slack = ${T} − ${q+cl+su} = ${r} ns`;$("sq").innerHTML=`T=${T} ns · tcq=${q} · logic=${cl} · tsu=${su}`};
+  c.innerHTML=`<h3>⏱ Slack Sprint</h3><p id="sl" class="m"></p><div class="big m" id="sq"></div><div class="row"><button class="p" id="sm">Timing met</button><button class="p" id="sv">Violated</button></div><p id="sf" class="m"></p>`;
+  const up=()=>$("sl").textContent=`Lives ${"♥".repeat(gs.l)} · Score ${gs.s}`;up();nq();
+  const an=v=>{if(v==gs.a){gs.s++;xp(3);$("sf").textContent="✔ "+gs.e}else{gs.l--;$("sf").textContent="✘ "+gs.e}up();if(gs.l<=0){c.innerHTML=`<h3>Game over</h3><p>Score: <b>${gs.s}</b></p><button class="p" onclick="game('slack')">Play again</button>`;return}nq()};
+  $("sm").onclick=()=>an(true);$("sv").onclick=()=>an(false)}}
+const IQ=[["Explain how Silogic generates so many questions.","Each topic has generator functions that pick random parameters such as bit widths, values and timing numbers, build the question text, and compute the correct answer in code. Every question is new and automatically checked.",["generator","random","answer"]],
+["How does the Silogic login protect passwords?","Passwords are never stored in plain text. They are hashed with PBKDF2 and a random salt using the Web Crypto API. Accounts live in localStorage, so a real product needs a backend.",["hash","salt","localstorage"]],
+["What is the difference between blocking and non-blocking assignments?","Blocking (=) executes in order and suits combinational logic. Non-blocking (<=) schedules updates together at the end of the time step, which models flip-flops and avoids race conditions.",["<=","combinational","race"]],
+["What is setup time and hold time?","Setup is how long data must be stable before the clock edge. Hold is how long it must stay stable after the edge. Violating either can cause metastability.",["before","after","edge"]],
+["What is metastability and how do you handle it?","A flip-flop can settle to an unknown value when setup or hold is violated, usually at clock domain crossings. Use a two-flop synchronizer to give it time to resolve.",["synchronizer","flip-flop","violat"]],
+["What causes a latch to be inferred in RTL?","An incomplete assignment in combinational logic, such as an if without else or a case without default, so the signal must hold its old value.",["else","default","combinational"]],
+["What is clock gating and why use it?","It stops the clock to idle registers using an enable, so they don’t toggle. This cuts dynamic power.",["enable","dynamic","power"]],
+["Explain scan chains in DFT.","Flip-flops are replaced with scan flops linked into a shift register. In test mode you shift patterns in, capture the response, and shift it out to detect manufacturing faults like stuck-at.",["shift","capture","fault"]],
+["How do you fix a setup violation in STA?","Reduce the data path delay by pipelining, restructuring logic, upsizing cells or buffering, or relax the clock period.",["pipeline","delay","clock"]],
+["What is a testbench and what does it contain?","A testbench has no ports. It instantiates the DUT, drives clocks, resets and stimulus, and checks outputs with assertions or a scoreboard.",["dut","stimulus","check"]],
+["What is the difference between wire and reg in Verilog?","A wire is a net driven continuously by assign or module outputs. A reg holds a value assigned in procedural blocks and may or may not become a flip-flop.",["assign","procedural","net"]],
+["How would you scale Silogic to thousands of users?","Add a backend with a database for accounts and progress, real authentication, a questions API, and a leaderboard with server-side validation.",["backend","database","authentication"]]];
+function startIV(){show("iv");const q=pick(IQ),c=$("ic");c.innerHTML=`<div class="tag">Answer in your own words, then check</div><h3>${q[0]}</h3><textarea id="ia" rows="5" style="width:100%;font:inherit;padding:10px;border-radius:8px;border:1px solid var(--bd);background:var(--cd);color:var(--tx)" placeholder="Answer as if you are speaking to the interviewer..."></textarea><div id="ir"></div><div class="row" style="margin-top:10px"><button class="p" id="ik">Check my answer</button><button id="in">Next question →</button></div>`;
+ $("ik").onclick=()=>{const t=$("ia").value.toLowerCase(),hit=q[2].filter(k=>t.includes(k)),miss=q[2].filter(k=>!t.includes(k));if(hit.length==q[2].length)xp(6);$("ir").innerHTML=`<div class="exp"><b>Key points covered: ${hit.length}/${q[2].length}</b>${miss.length?` · try mentioning: <span class="m">${miss.join(", ")}</span>`:" 🎉"}<br><br><b>Model answer:</b> ${q[1].replace(/</g,"&lt;")}</div>`};$("in").onclick=startIV}
+let mode=1;
+function setMode(m){mode=m;$("m1").classList.toggle("on",m==1);$("m2").classList.toggle("on",m==2);document.querySelectorAll(".su").forEach(x=>x.classList.toggle("hide",m==2));$("sb").textContent=m==1?"Create account":"Log in";$("lp").autocomplete=m==1?"new-password":"current-password";$("lm").textContent=""}
+$("m1").onclick=()=>setMode(1);$("m2").onclick=()=>setMode(2);
+const getA=()=>{try{return JSON.parse(localStorage.getItem("silogic_accounts")||"{}")}catch(e){return{}}};
+const clr=()=>{$("lp").value=""};
+async function hp(p,salt){const k=await crypto.subtle.importKey("raw",new TextEncoder().encode(p),"PBKDF2",false,["deriveBits"]),d=await crypto.subtle.deriveBits({name:"PBKDF2",salt:new Uint8Array(salt),iterations:150000,hash:"SHA-256"},k,256);return Array.from(new Uint8Array(d)).join(",")}
+$("sb").onclick=async()=>{const m=$("lm"),u=$("lu").value.trim().toLowerCase(),p=$("lp").value,A=getA();m.textContent="";
+ if(!/^\S{2,30}$/.test(u)){m.textContent="Username: 2 to 30 characters, no spaces.";return}
+ try{if(mode==1){const n=$("ln").value.trim(),e=$("le").value.trim();
+   if(n.length<2){m.textContent="Enter your full name.";return}
+   if(!/^\S+@\S+\.\S+$/.test(e)){m.textContent="Enter a valid email address.";return}
+   if(!p){m.textContent="Enter a password.";return}
+   
+   if(A[u]){m.textContent="That username is taken. Choose another.";return}
+   const s=Array.from(crypto.getRandomValues(new Uint8Array(16)));A[u]={n,e,s,h:await hp(p,s)};
+   try{localStorage.setItem("silogic_accounts",JSON.stringify(A))}catch(x){m.textContent="Could not save the account in this browser.";return}
+   clr();enter(n)}
+  else{const a=A[u];if(!a){m.textContent="No account found with that username.";return}
+   if(await hp(p,a.s)!==a.h){m.textContent="Incorrect password.";return}clr();enter(a.n)}
+ }catch(x){m.textContent="Something went wrong. Please try again."}};
+["ln","lu","le","lp"].forEach(id=>$(id).onkeydown=e=>{if(e.key=="Enter")$("sb").click()});
+$("lo").onclick=()=>{try{localStorage.removeItem("silogic_user")}catch(e){}$("lg").classList.remove("hide");clr();$("hi").textContent="";show("home")};
+const GOOGLE_CLIENT_ID="421771355940-320ndlpp7sdjs8d6hjkfos63tn8v9l7u.apps.googleusercontent.com";
+$("sp").onchange=()=>{$("lp").type=$("sp").checked?"text":"password"};
+function initG(){const t=document.createElement("script");t.src="https://accounts.google.com/gsi/client";t.onload=()=>{google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:r=>{try{const j=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(r.credential.split(".")[1].replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0))));enter(j.name||j.email)}catch(e){$("lm").textContent="Google sign-in failed. Try again."}}});$("gb").classList.add("hide");google.accounts.id.renderButton($("gbtn"),{theme:"outline",size:"large",text:"continue_with"})};t.onerror=()=>{$("lm").textContent="Could not load Google sign-in."};document.head.appendChild(t)}
+$("gb").onclick=()=>{$("lm").textContent="Google sign-in turns on once a Google client ID is added in the code (GOOGLE_CLIENT_ID) and the site runs on your own GitHub Pages address."};
+if(GOOGLE_CLIENT_ID)initG();
+try{const u=localStorage.getItem("silogic_user");if(u)enter(u)}catch(e){}
+stats();
+</script></body></html>
